@@ -66,10 +66,9 @@ def process_provider_data(input_file, output_file):
                 elif 'Rx' in line:
                     data['Provider E-Perscribes'] = 'YesEPerscribe'
                 elif '#' in line:
-                    # Assume Provider ID is the part of the line starting with '#'
                     provider_id_match = re.search(r'#\S+', line)
                     if provider_id_match:
-                        data['Provider ID#'] = provider_id_match.group(0).strip('# ')
+                        data['Provider ID#'] = provider_id_match.group(0).strip()
                         print("Extracted Provider ID#:", data['Provider ID#'])  # Debugging print
                 elif not address_started and not line[0].isdigit():
                     if data['Medical Specialty']:
