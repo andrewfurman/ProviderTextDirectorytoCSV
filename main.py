@@ -1,6 +1,6 @@
 import csv
 import re
-from SaveProviderString import save_provider_data
+from SaveProviderString import save_provider_data, save_provider_data_as_text
 from IdentifyProviderString import identify_provider_strings
 
 def process_provider_data(input_file, output_file):
@@ -10,7 +10,7 @@ def process_provider_data(input_file, output_file):
     # Use the identify_provider_strings function to split the content into individual provider records.
     providers = identify_provider_strings(content)
 
-    with open(output_file, 'w', newline='') as csvfile:
+    with open(output_file, 'w', newline='') as csvfile, open('output.txt', 'w') as txtfile:
         fieldnames = [
             'Provider ID#', 'Last Name', 'First Name', 'Middle Initial',
             'Professional Medical Title', 'Affiliation', 'Medical Specialty',
@@ -24,12 +24,17 @@ def process_provider_data(input_file, output_file):
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
+        
+        # Write the header to the text file
+        txtfile.write(' | '.join(f"{field:<20}" for field in fieldnames) + '\n')
+        txtfile.write('-' * (len(fieldnames) * 22) + '\n')  # Adjust the number of dashes based on your field length
 
         for provider in providers:
             if not provider.strip():
                 continue
-            print("Processing Provider Data:\n", provider)  # Debugging print for each provider
+            print("\nFOUND:", provider.replace('\n', ' '))  # Debugging print for each provider
             save_provider_data(provider, writer)
+            save_provider_data_as_text(provider, txtfile)
 
 if __name__ == "__main__":
     process_provider_data('input.txt', 'output.csv')
